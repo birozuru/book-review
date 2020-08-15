@@ -7,6 +7,7 @@ from flask_bcrypt import Bcrypt
 from flask_session import Session
 from sqlalchemy import create_engine, exc
 from sqlalchemy.orm import scoped_session, sessionmaker
+from forms import BookSearchForm
 import requests
 import bcrypt
 
@@ -94,24 +95,16 @@ def login():
         message = "Username or password is incorrect."
     return render_template("login.html", message=message)  
 
-@app.route("/dashboard", methods=["POST", "GET"])
+@app.route("/dashboard", methods=["GET", "POST"])
 def dashboard():
     if 'user' not in session:
         return redirect(url_for('login'))
-
-    message = None
 
     if 'user' in session:
         return render_template("dashboard.html", logged=session['user'])
 
     if request.method == "POST":
-            search = request.form.get("search")
-            s = '%' + str(search) + '%'
-            results = db.execute("SELECT * FROM books WHERE title LIKE :q OR isbn LIKE :q OR author LIKE :q", {"q": search}).fetchall()
-            return redirect(url_for('search'))
-    else:
-        message= "Book doesn't exist in our library!!!"
-    return redirect(url_for('dashboard'), message=message)        
+            return redirect(url_for('search'))     
 
 
 @app.route("/dashboard/search", methods=["POST", "GET"])
@@ -119,13 +112,13 @@ def search():
     if 'user' not in session:
         return redirect(url_for('login'))
 
-    message = None
+    #message = None
 
     if 'user' in session:
 
         query = request.form.get("search")
         query = '%' + str(query) + '%'
-        results = db.execute("SELECT * FROM books WHERE title LIKE :q OR isbn LIKE :q OR author LIKE :q", {"q": query}).fetchall()
+        results = db.execute("SELECT * FROM books WHERE title LIKE :q OR isbn LIKE :q OR author LIKE :q LIMIT 10", {"q": query}).fetchall()
         return render_template("search.html", results=results)
 
 @app.route("/b/<string:isbn>", methods=["GET", "POST"])
