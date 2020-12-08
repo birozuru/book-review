@@ -10,9 +10,10 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 from forms import BookSearchForm
 import requests
 import bcrypt
-
+import csv
 
 app = Flask(__name__)
+app.config["DEBUG"] = True
 bcrypt = Bcrypt(app)
 
 # Check for environment variable
@@ -161,9 +162,8 @@ def api(isbn):
     })
     
     
-
-
-
+if __name__ == "__main__":
+    app.run()
 
 
 
