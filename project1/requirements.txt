@@ -64,7 +64,7 @@ olefile==0.46
 paramiko==2.6.0
 pexpect==4.6.0
 Pillow==7.0.0
-protobuf==3.6.1
+protobuf==3.18.3
 psutil==5.7.3
 psycopg2==2.8.6
 pyasn1==0.4.2
